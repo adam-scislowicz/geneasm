@@ -1,0 +1,14 @@
+WSL2 debian bullseye
+    apt install build-essential
+	# gcc 10.2.1
+
+mamba install \
+ cmake \
+ boost-cpp \
+ pybind11 \
+ ninja \
+ spdlog \
+ doctest \
+ flatbuffers
+
+cmake .. -GNinja

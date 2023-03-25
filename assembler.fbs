@@ -1,0 +1,14 @@
+// Assembler Flatbuffer Schema
+
+namespace Gene.Assembler;
+
+table KmerToEmbeddingMap {
+	onnx_sha384:[uint8];
+	entry_dim:uint16;
+	kmer_to_embedding_entries:[KmerToEmbeddingEntry];
+}
+
+table KmerToEmbeddingEntry {
+	kmer:string;
+	embedding:[uint8];
+}
