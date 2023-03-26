@@ -1,0 +1,3 @@
+[submodule "third_party/deep-learning-containers"]
+	path = third_party/deep-learning-containers
+	url = https://github.com/adam-scislowicz/deep-learning-containers.git

@@ -1,0 +1,29 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/ubuntu
+{
+	"name": "Sagemaker",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"args": {
+			"USER": "user"
+		}
+	},
+	"runArgs": ["--init"],
+	"mounts": [
+		"source=${localEnv:HOME}/.gnupg,target=/home/user/.gnupg,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.kube,target=/home/user/.kube-host,type=bind,consistency=cached"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// Use 'postCreateCommand' to run commands after the container is created.
+	// "postCreateCommand": "/usr/local/bin/postCreateCommand.sh",
+	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "user",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode-remote.vscode-remote-extensionpack"
+			]
+		}
+	}
+}
