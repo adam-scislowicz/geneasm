@@ -10,8 +10,11 @@
 	},
 	"runArgs": ["--init"],
 	"mounts": [
-		"source=${localEnv:HOME}/.gnupg,target=/home/user/.gnupg,type=bind,consistency=cached",
-		"source=${localEnv:HOME}/.kube,target=/home/user/.kube-host,type=bind,consistency=cached"
+		"source=${localEnv:HOME}/.gnupg,target=/root/.gnupg,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.kube,target=/root/.kube-host,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.aws,target=/root/.aws,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached",
+		"source=${localEnv:HOME}/.ssh,target=/root/.ssh,type=bind,consistency=cached"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],

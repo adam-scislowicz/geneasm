@@ -1,19 +1,22 @@
 # ---
 # jupyter:
 #   jupytext:
+#     custom_cell_magics: kql
 #     text_representation:
 #       extension: .py
-#       format_name: light
-#       format_version: '1.5'
-#       jupytext_version: 1.14.5
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.11.2
 #   kernelspec:
 #     display_name: conda_pytorch_p39
 #     language: python
 #     name: conda_pytorch_p39
 # ---
 
+# %%
 # !pip3 install biopython scikit-bio torchinfo hnswlib
 
+# %%
 cfg = dict()
 cfg['kmer_size'] = 64
 cfg['embedding_dim'] = 512
@@ -37,7 +40,7 @@ cfg['model_bin'] = 'data/model.bin'
 cfg['triplets_path'] = 'data/triplets.np'
 cfg['triplet_swas_path'] = 'data/triplet_swas.np'
 
-# +
+# %%
 import os
 from Bio import Entrez, SeqIO
 from Bio.Seq import Seq
@@ -70,7 +73,7 @@ print("Done processing test samples.")
 #    seq = Seq(str(rec.seq))
 #    print(seq)
 
-# +
+# %%
 import torch
 
 if torch.cuda.is_available(): 
@@ -80,7 +83,7 @@ else:
 device = torch.device(dev)
 print(dev)
 
-# +
+# %%
 import numpy as np
 import torch.nn as nn
 import torch.nn.functional as F
@@ -161,7 +164,7 @@ class TripletLoss(nn.Module):
         loss = loss.to(torch.device(dev))
         return loss
 
-# +
+# %%
 alphabet = ['a', 'c', 'g', 't', 'r', 'y', 's', 'w', 'k', 'm', 'b', 'd', 'h', 'v', 'n', '-']
 alphabet_to_onehoti = dict()
 onehoti_to_alphabet = dict()
@@ -196,7 +199,7 @@ def onehot_to_seqstr(onehot):
     return seqstr
 
 
-# +
+# %%
 from skbio.alignment import StripedSmithWaterman
 
 def gen_random_seq(seqlen, alphabet):
@@ -328,11 +331,10 @@ else:
     print("done saving triplets to file.")
     
 print('done.')
-# -
+# %%
 
 
-
-# +
+# %%
 # separate triplets into train and test sets
 train_set_size = int(len(triplets) * 0.8)
 test_set_size = len(triplets) - train_set_size
@@ -369,7 +371,7 @@ print('done.')
 print(triplets[0,:,:,0])
 print(triplet_swas[2])
 
-# +
+# %%
 # Training
 
 import os
@@ -422,7 +424,7 @@ if requireTraining:
     torch.save(model.state_dict(), cfg['model_bin'])
     print("done saving model.")
 
-# +
+# %%
 import matplotlib.pyplot as plt
 
 fig = plt.figure(figsize=(10,10))
@@ -478,12 +480,12 @@ ax7 = fig.add_subplot(5, 1, 5)
 ax7.plot(criterion.triplet_loss_margin_samples[0])
 ax7.set_title("ReLU(Triplet Loss Samples w/ Margin)")
 plt.show()
-# -
 
+# %% [markdown]
 # ### print("XXX: {}".format(criterion.triplet_loss_margin_samples[0][1]))
 # print(criterion.triplet_loss_margin_samples.shape)
 
-# +
+# %%
 # Testing
 
 from skbio.alignment import StripedSmithWaterman
@@ -612,7 +614,7 @@ for APN, E in tqdm(test_loader):
 print("Total: {}, NormLoss: {}, Match: {} of {} ({})".format(
     total, (totalLoss/total), match, match+mismatch, match/(match+mismatch)))
 
-# +
+# %%
 max_discernment_error = np.max(discernment_error)
 max_mismatch_error = np.max(mismatch_error)
 
@@ -622,6 +624,5 @@ axs[0].hist(discernment_error, bins=40, range=[0.0, max_discernment_error])
 axs[0].set_title("Discernment Error max={}".format(max_discernment_error))
 axs[1].hist(mismatch_error, bins=40, range=[0.0, max_mismatch_error])
 axs[1].set_title("SWAEmb Type-I Estimation Error max={}".format(max_mismatch_error))
-# -
-
+# %%
 

@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  PrometheusUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: PrometheusUser
+      Path: "/"
+  PrometheusUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref PrometheusUser
+  PrometheusUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: PrometheusUserPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "prometheus:Get*"
+              - "prometheus:List*"
+            Resource: !GetAtt ManagedPrometheus.Arn
+      Users:
+        - !Ref PrometheusUser
+  ManagedPrometheus:
+    Type: AWS::APS::Workspace
+    Properties:
+      Alias: PrometheusWorkspace
+      Region: us-west-2
+      PublicAccess: Enabled
+      WorkspaceDescription: "Managed Prometheus workspace"
+  GrafanaUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: GrafanaUser
+      Path: "/"
+  GrafanaUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref GrafanaUser
+  GrafanaUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: GrafanaUserPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - "grafana:Get*"
+              - "grafana:List*"
+            Resource: !GetAtt Grafana.Arn
+      Users:
+        - !Ref GrafanaUser
+  Grafana:
+    Type: AWS::Grafana::Workspace
+    Properties:
+      Alias: GrafanaWorkspace
+      Region: us-west-2
+      PublicAccess: Enabled
+      WorkspaceDescription: "Managed Grafana workspace"
+Outputs:
+  PrometheusURL:
+    Value: !GetAtt ManagedPrometheus.PrometheusEndpoint
+    Description: "Public URL for Prometheus"
+  GrafanaURL:
+    Value: !GetAtt Grafana.GrafanaEndpoint
+    Description: "Public URL for Grafana"
+  PrometheusUserAccessKeyId:
+    Value: !Ref PrometheusUserAccessKey
+    Description: "Access key ID for Prometheus user"
+  PrometheusUserSecretAccessKey:
+    Value: !GetAtt PrometheusUserAccessKey.SecretAccessKey
+    Description: "Secret access key for Prometheus user"
+  GrafanaUserAccessKeyId:
+    Value: !Ref GrafanaUserAccessKey
+    Description: "Access key ID for Grafana user"
+  GrafanaUserSecretAccessKey:
+    Value: !GetAtt GrafanaUserAccessKey.SecretAccessKey
+    Description: "Secret access key for Grafana user"

@@ -329,7 +329,8 @@ RUN HOME_DIR=/root \
  && chmod +x ${HOME_DIR}/oss_compliance/generate_oss_compliance.sh \
  && ${HOME_DIR}/oss_compliance/generate_oss_compliance.sh ${HOME_DIR} ${PYTHON} \
  && rm -rf ${HOME_DIR}/oss_compliance* \
- && rm -rf /tmp/tmp*
+ && rm -rf /tmp/tmp* \
+ && mkdir -p /root/jupyter-lab
 
 # Removing the cache as it is needed for security verification
 RUN rm -rf /root/.cache | true
@@ -499,6 +500,7 @@ RUN cd /tmp \
 RUN pip install --no-cache-dir -U \
     "bokeh>=3.0.1,<4" \
     "imageio>=2.22,<3" \
+    "jupyterlab" \
     "opencv-python>=4.6,<5" \
     "plotly>=5.11,<6" \
     "seaborn>=0.12,<1" \
