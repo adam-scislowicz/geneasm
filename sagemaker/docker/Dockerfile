@@ -505,7 +505,11 @@ RUN pip install --no-cache-dir -U \
     "plotly>=5.11,<6" \
     "seaborn>=0.12,<1" \
     "numba>=0.56.4,<0.57" \
-    "shap>=0.41,<1"
+    "shap>=0.41,<1" \
+    "biopython" \
+    "scikit-bio" \
+    "torchinfo" \
+    "hnswlib"
 
 # install metis
 RUN rm /etc/apt/sources.list.d/* \
