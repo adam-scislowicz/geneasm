@@ -62,6 +62,8 @@ cfg['triplet_loss_margin'] = 0.50
 cfg['force_recalculate_inputs'] = False
 cfg['input_x_path'] = 'data/input_x'
 cfg['input_y_path'] = 'data/input_y'
+cfg['train_loader_path'] = '/opt/ml/data/test/train.dat'
+cfg['test_loader_path'] = '/opt/ml/data/test/test.dat'
 cfg['sagemaker_hyperparameter_path'] = '/opt/ml/input/config/hyperparameters.json'
 
 # %%
@@ -435,29 +437,36 @@ class CustomInputDataset(torch.utils.data.Dataset):
         return self.data[index], self.labels[index]
 
 def init_loaders(input_x, input_y):
-      # separate triplets into train and test sets
+      # separate inputs into train and test sets
+
+      train_loader = None
+      test_loader = None
+
+      if os.path.isfile(cfg['train_loader_path']):
+            train_loader = torch.load(cfg['train_loader_path'])
+      if os.path.isfile(cfg['test_loader_path']):
+            test_loader = torch.load(cfg['test_loader_path'])
+
       train_set_size = int(len(input_x) * 0.8)
       test_set_size = len(input_x) - train_set_size
 
       if (input_x.shape[1] == 64):
             input_x = np.transpose(input_x, (0,2,1,3)) # modify order for pytorch input
 
+      if train_loader == None:
+            train = CustomInputDataset(input_x[0:train_set_size], input_y[0:train_set_size])
+            train_loader = torch.utils.data.DataLoader(train, batch_size=cfg['batch_size'], shuffle=True)
+            torch.save(test_loader, cfg['train_loader_path'])
+            print("Train set size:", train_set_size)
 
-      train = CustomInputDataset(input_x[0:train_set_size], input_y[0:train_set_size])
-      test = CustomInputDataset(input_x[-test_set_size:], input_y[-test_set_size:])
-
-      train_loader = torch.utils.data.DataLoader(train, batch_size=cfg['batch_size'], shuffle=True)
-      test_loader = torch.utils.data.DataLoader(test, batch_size=cfg['batch_size'], shuffle=False)
-
-      torch.save(train_loader, 'data/train.dat')
-      torch.save(test_loader, 'data/test.dat')
-
-      print("Train set size:", train_set_size)
-      print("Test set size:", test_set_size)
+      if test_loader == None:
+            test = CustomInputDataset(input_x[-test_set_size:], input_y[-test_set_size:])
+            test_loader = torch.utils.data.DataLoader(test, batch_size=cfg['batch_size'], shuffle=False)
+            torch.save(train_loader, cfg['test_loader_path'])
+            print("Test set size:", test_set_size)
+      
       print('done.')
 
-      print("input_x: {}".format(input_x[0,:,:,0]))
-      print("input_y: {}".format(input_y[2]))
       return train_loader, test_loader
 
 
