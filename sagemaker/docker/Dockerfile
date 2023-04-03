@@ -560,5 +560,8 @@ RUN HOME_DIR=/root \
 # Removing the cache as it is needed for security verification
 RUN rm -rf /root/.cache | true
 
+COPY ../../notebook/swaemb.py /opt/ml/code/
+ENV SAGEMAKER_PROGRAM swaemb.py
+
 ENTRYPOINT ["bash", "-m", "start_with_right_hostname.sh"]
 CMD ["/bin/bash"]

@@ -13,4 +13,4 @@ pytorch_estimator = PyTorch(entry_point='swaemb.py',
                             source_dir='notebooks',
                             git_config=git_config,
                             instance_count=1,
-                            instance_type='p3.8xlarge')
+                            instance_type='p3.2xlarge')
