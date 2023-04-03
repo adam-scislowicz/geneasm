@@ -790,8 +790,14 @@ if __name__ == "__main__":
             hyperparams_dict = json.load(read_file)
         print(hyperparams_dict)
 
-    input_x, input_y = init_inputs()
-    train_loader, test_loader = init_loaders(input_x, input_y)
+    if os.path.isfile(cfg['train_loader_path']) and os.path.isfile(cfg['test_loader_path']):
+        input_x = None
+        input_y = None
+        train_loader, test_loader = init_loaders(input_x, input_y)
+    else:
+        input_x, input_y = init_inputs()
+        train_loader, test_loader = init_loaders(input_x, input_y)
+
 
     model, criterion = train(train_loader)
     test(model, criterion, test_loader)
